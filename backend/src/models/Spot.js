@@ -1,14 +1,22 @@
-const mongoose = require('mongoose')
+const { Schema, model } = require('mongoose');
 
-const SpotSchema = new mongoose.Schema({
+const SpotSchema = new Schema({
   thumbnail: String,
   company: String,
   price: Number,
   techs: [String],
   user: {
-    type: mongoose.Schema.Types.ObjectId,
+    type: Schema.Types.ObjectId,
     ref: 'User'
   }
-})
+}, {
+  toJSON: {
+    virtuals: true
+  }
+});
 
-module.exports = mongoose.model('Spot', SpotSchema)
+SpotSchema.virtual('thumbnail_url').get(function () {
+  return `http://192.168.1.109:3333/files/${this.thumbnail}`;
+});
+
+module.exports = model('Spot', SpotSchema);
